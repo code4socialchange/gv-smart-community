@@ -1,0 +1,19 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import '~bootstrap/scss/bootstrap-grid';
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+body {
+    margin: 0;
+}
+
+.header-toolbar {
+    background-color: #740210;
+    color: #fff;
+    position: fixed;
+    top: 0;
+}
+
+.main {
+    padding-top: 70px;
+}
