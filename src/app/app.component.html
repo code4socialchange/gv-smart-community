@@ -1,7 +1,38 @@
-<mat-toolbar class="mat-elevation-z6 header-toolbar">GV Smart Community</mat-toolbar>
+<mat-sidenav-container (backdropClick)="close('backdrop')" fullscreen>
 
-<div class="main">
-  <div class="container-fluid">
-    <router-outlet></router-outlet>
+  <mat-sidenav #sidenav opened="false" mode="over">
+
+    <div class="text-center mt-4 mb-4">
+      <img src="./../assets/logo.png" alt="Gram Vikas" width="120">
+    </div>
+
+    <mat-list>
+      <mat-list-item routerLinkActive="active">
+        <a routerLink="/dashboard">Dashboard</a>
+      </mat-list-item>
+      <mat-list-item routerLinkActive="active">
+        <a routerLink="/users">Users</a>
+      </mat-list-item>
+      <mat-list-item routerLinkActive="active">
+        <a routerLink="/villages">Villages</a>
+      </mat-list-item>
+      <mat-list-item routerLinkActive="active">
+        <a routerLink="/messages">Messages</a>
+      </mat-list-item>
+    </mat-list>
+  </mat-sidenav>
+    
+  <mat-toolbar class="mat-elevation-z6 header-toolbar" role="header">
+    <mat-toolbar-row>
+      <button mat-button disableRipple (click)="sidenav.toggle()" class="sidenav-toggle-button">X</button>
+      GV Smart Community
+    </mat-toolbar-row>
+  </mat-toolbar>
+
+  <div class="main">
+    <div class="container-fluid">
+      <router-outlet></router-outlet>
+    </div>
   </div>
-</div>
+
+  </mat-sidenav-container>

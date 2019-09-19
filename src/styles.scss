@@ -5,6 +5,47 @@
 
 body {
     margin: 0;
+    background: #fff;
+}
+
+mat-sidenav {
+    width: 220px;
+    display: flex;
+    flex-direction: column;
+}
+
+mat-toolbar.mat-toolbar-multiple-rows {
+    min-height: 56px;
+    font-size: 16px;
+    font-weight: 600;
+
+    .mat-toolbar-row {
+        height: 56px;
+    }
+}
+
+.mat-drawer-container {
+    background: #fff;
+}
+
+.sidemenu {
+  .menu {
+    background: #EBEBEB;
+    padding: 15px 20px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    li {
+      a {
+        text-decoration: none;
+        color: #3a3a3a;
+        padding: 5px 0;
+        display: block;
+      }
+      a.active {
+        font-weight: 700;
+        color: #1965D8;
+      }
+    }
+  }
 }
 
 .header-toolbar {
@@ -15,5 +56,32 @@ body {
 }
 
 .main {
-    padding-top: 70px;
+    padding-top: 80px;
+}
+
+.form-section mat-form-field {
+    margin-right: 10px;
+}
+
+.table-container {
+    height: calc(100vh - 215px);
+    overflow: auto;
+}
+
+.mat-table {
+    width: 100%;
+    padding-bottom: 60px;
+}
+
+// Utility Classes
+.text-left {
+    text-align: left;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
 }

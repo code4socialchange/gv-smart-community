@@ -9,7 +9,11 @@ import {
   MatSelectModule,
   MatButtonModule,
   MatTableModule,
-  MatDialogModule
+  MatDialogModule,
+  MatCheckboxModule,
+  MatPaginatorModule,
+  MatListModule,
+  MatSidenavModule
 } from '@angular/material';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -41,7 +45,11 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
     MatSelectModule,
     MatButtonModule,
     MatTableModule,
-    MatDialogModule
+    MatDialogModule,
+    MatCheckboxModule,
+    MatPaginatorModule,
+    MatListModule,
+    MatSidenavModule
   ],
   providers: [],
   bootstrap: [AppComponent]
