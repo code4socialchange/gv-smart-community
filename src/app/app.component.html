@@ -27,7 +27,11 @@
     
   <mat-toolbar class="mat-elevation-z6 header-toolbar" role="header">
     <mat-toolbar-row>
-      <button mat-button disableRipple (click)="sidenav.toggle()" class="sidenav-toggle-button">X</button>
+      <div class="ham-menu sidenav-toggle-button" (click)="sidenav.toggle()">
+        <div class="bar1"></div>
+        <div class="bar2"></div>
+        <div class="bar3"></div>
+      </div>
       GV Smart Community
     </mat-toolbar-row>
   </mat-toolbar>
