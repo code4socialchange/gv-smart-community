@@ -10,6 +10,20 @@ body {
     font-size: 14px;
 }
 
+.ham-menu {
+    display: inline-block;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.bar1, .bar2, .bar3 {
+    width: 22px;
+    height: 3px;
+    background-color: #fff;
+    margin: 4px 0;
+    transition: 0.4s;
+}
+
 mat-sidenav {
     width: 220px;
     display: flex;
