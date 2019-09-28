@@ -9,7 +9,7 @@ const SyncRoute = require('./routes/sync');
 router.get('/status', (req, res) => res.send('OK'));
 
 router.use('/user', UserRoute);
-router.use('/message', MessageRoute);
+// router.use('/message', MessageRoute);
 router.use('/sync', SyncRoute);
 
 

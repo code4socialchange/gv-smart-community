@@ -1,5 +1,5 @@
 // Loading .env
-require('dotenv-safe').config();
+require('dotenv-safe').config({ allowEmptyValues: true });
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -8,6 +8,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 
 const logger = require('./logger');
+const models = require('./models/index');
 
 const app = express();
 
@@ -24,4 +25,8 @@ if (process.env.SERVERTYPE == 'OFFLINE') {
     app.use('/api', require('./offline/routes'));
 }
 
-app.listen(3000, () => logger.info(`Server started successfully on port 3000`));
+models.sequelize.sync().then(() => {
+    app.listen(3000, () => logger.info(`Server started successfully on port 3000`));
+}).catch((error) => {
+    logger.error('Error', error.message)
+});

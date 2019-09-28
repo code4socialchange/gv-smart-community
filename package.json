@@ -10,8 +10,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "dev-server": "nodemon api/index.js --watch api",
-    "server": "node api/index.js"
+    "dev-server": "nodemon api/app.js --watch api",
+    "server": "node api/app.js"
   },
   "private": true,
   "dependencies": {
