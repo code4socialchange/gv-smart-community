@@ -12,6 +12,7 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: false, 
             set(value) { (async() => { this.setDataValue('password', await bcrypt.hash(value, 5)) })(); }
         },
+        active: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: true },
         createdAt: Sequelize.DATE,
         updatedAt: Sequelize.DATE,
     });
