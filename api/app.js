@@ -22,7 +22,7 @@ app.use(cors());
 if (process.env.SERVERTYPE == 'OFFLINE') {
     app.use('/api', require('./offline/routes'));
 } else {
-    app.use('/api', require('./offline/routes'));
+    app.use('/api', require('./server/routes'));
 }
 
 models.sequelize.sync().then(() => {
