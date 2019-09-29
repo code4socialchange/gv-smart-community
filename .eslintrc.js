@@ -22,10 +22,6 @@ module.exports = {
             "error",
             "unix"
         ],
-        "quotes": [
-            "error",
-            "single"
-        ],
         "brace-style": [
             "error",
             "stroustrup"
@@ -42,7 +38,8 @@ module.exports = {
         ],
         "one-var": [
             "off"
-        ]
+        ],
+        "allowSingleLine": true
     },
     "overrides": [
         {
