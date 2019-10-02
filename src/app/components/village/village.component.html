@@ -5,16 +5,22 @@
 
         <div class="form-section">
 
-            <form autocomplete="off">
+            <form autocomplete="off" [formGroup]="villageForm" (ngSubmit)="saveVillage()" novalidate>
                 <mat-form-field>
-                    <input matInput placeholder="Village Name" autocomplete="off">
+                    <input matInput placeholder="Village Name" autocomplete="off" formControlName="name">
                 </mat-form-field>
                 <mat-form-field>
-                    <input matInput placeholder="District" autocomplete="off">
+                    <input matInput placeholder="District" autocomplete="off" formControlName="district">
                 </mat-form-field>
                 <mat-form-field>
-                    <input matInput placeholder="Pincode" autocomplete="off">
+                    <input matInput placeholder="Pincode" autocomplete="off" type="number" formControlName="pincode">
                 </mat-form-field>
+
+                <div class="display-block">
+                    <button mat-flat-button color="primary" type="submit" [disabled]="!(villageForm.valid && villageForm.touched)">Save</button>
+                    <button mat-button (click)="resetVillageForm()">Reset</button>
+                </div>
+
             </form>
 
         </div>

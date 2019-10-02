@@ -3,6 +3,10 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { SharedService } from 'src/app/services/shared.service';
+import { Observable } from 'rxjs';
+import { map } from 'bluebird';
 
 export interface PeriodicElement {
   name: string;
@@ -31,6 +35,9 @@ const ELEMENT_DATA: PeriodicElement[] = [
 })
 export class VillageComponent implements OnInit {
 
+  villageForm: FormGroup;
+  villages: Array<any> = [];
+
   displayedColumns: string[] = ['select', 'position', 'name', 'weight', 'symbol'];
   dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
   selection = new SelectionModel<PeriodicElement>(true, []);
@@ -38,11 +45,13 @@ export class VillageComponent implements OnInit {
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
-  constructor() { }
+  constructor(private sharedService: SharedService) { }
 
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+    this.createVillageForm();
+    console.log(this.villageForm.valid && this.villageForm.touched)
   }
 
   applyFilter(filterValue: string) {
@@ -61,6 +70,34 @@ export class VillageComponent implements OnInit {
       return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
     }
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
+  }
+
+  createVillageForm() {
+    this.villageForm = new FormGroup({
+      name: new FormControl('', [Validators.required]),
+      district: new FormControl('', [Validators.required]),
+      pincode: new FormControl(null, [Validators.required])
+    })
+  }
+
+  getVillages() {
+    this.sharedService.getVillages().subscribe(res => {
+      this.villages = res['villages'];
+      this.sharedService.villages = res['villages'];
+    })
+  }
+
+  saveVillage() {
+    if (this.villageForm.invalid) return;
+    this.villageForm.markAsPristine()
+    this.sharedService.addVillage(this.villageForm.value).subscribe(_ => {
+      this.villageForm.reset();
+      this.getVillages();
+    });
+  }
+
+  resetVillageForm() {
+    this.villageForm.reset();
   }
 
 }
