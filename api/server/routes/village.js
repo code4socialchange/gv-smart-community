@@ -7,7 +7,10 @@ router
 	.route('/')
 	.get(villageController.getVillages)
 	.post(villageController.addVillage)
-	.patch(villageController.updateVillage)
-	.delete(villageController.deleteVillage)
+	.patch(villageController.updateVillage);
+
+router
+	.route('/:villageId')
+	.delete(villageController.deleteVillage);
 
 module.exports = router;
