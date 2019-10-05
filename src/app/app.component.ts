@@ -21,7 +21,7 @@ export class AppComponent {
 
   getVillages() {
     this.shared.getVillages().subscribe(res => {
-      this.shared.villages = res['villages'];
+      this.shared.villages.next(res['villages']);
     })
   }
 
