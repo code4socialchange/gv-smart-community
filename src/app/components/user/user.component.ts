@@ -43,6 +43,7 @@ export class UserComponent implements OnInit {
     this.getUsers();
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+    this.villages = this.shared.villages.value;
     this.shared.villages.subscribe(villages => this.villages = villages);
   }
 
