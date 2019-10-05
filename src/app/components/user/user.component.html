@@ -5,31 +5,38 @@
 
         <div class="form-section">
 
-            <form autocomplete="off">
+            <form autocomplete="off" #ngForm="ngForm" [formGroup]="userForm" (ngSubmit)="saveUser()">
                 <mat-form-field>
-                    <input matInput placeholder="First Name" autocomplete="off">
+                    <input matInput placeholder="First Name" autocomplete="off" formControlName="firstName">
                 </mat-form-field>
                 <mat-form-field>
-                    <input matInput placeholder="Last Name" autocomplete="off">
+                    <input matInput placeholder="Last Name" autocomplete="off" formControlName="lastName">
                 </mat-form-field>
                 <mat-form-field>
-                    <input matInput placeholder="Phone" autocomplete="off">
+                    <input matInput placeholder="Phone" autocomplete="off" formControlName="phone" type="number">
                 </mat-form-field>
                 <mat-form-field>
-                    <input matInput placeholder="Password" autocomplete="off" readonly>
+                    <input matInput placeholder="Password" autocomplete="off" formControlName="password" readonly>
                 </mat-form-field>
                 <mat-form-field>
                     <mat-label>Village</mat-label>
-                    <mat-select>
-                        <mat-option value=""></mat-option>
+                    <mat-select formControlName="VillageId">
+                        <mat-option *ngFor="let village of villages" [value]="village.id">{{ village.name }}</mat-option>
                     </mat-select>
                 </mat-form-field>
                 <mat-form-field>
                     <mat-label>User Role</mat-label>
-                    <mat-select>
-                        <mat-option value=""></mat-option>
+                    <mat-select formControlName="role">
+                        <mat-option value="entrepreneur">Entrepreneur</mat-option>
+                        <mat-option value="offline">Offline</mat-option>
                     </mat-select>
                 </mat-form-field>
+
+                <div class="display-block">
+                    <button mat-flat-button color="primary" type="submit" [disabled]="!(userForm.valid && userForm.touched)">Save</button>
+                    <button mat-button (click)="ngForm.resetForm({ password: generatePassword() })">Reset</button>
+                </div>
+
             </form>
 
         </div>
@@ -48,50 +55,38 @@
             <div class="table-container">
                 <table mat-table [dataSource]="dataSource">
         
-                    <!-- Checkbox Column -->
-                    <ng-container matColumnDef="select">
-                        <th mat-header-cell *matHeaderCellDef>
-                            <mat-checkbox (change)="$event ? masterToggle() : null"
-                                            [checked]="selection.hasValue() && isAllSelected()"
-                                            [indeterminate]="selection.hasValue() && !isAllSelected()"
-                                            [aria-label]="checkboxLabel()">
-                            </mat-checkbox>
-                        </th>
-                        <td mat-cell *matCellDef="let row">
-                            <mat-checkbox (click)="$event.stopPropagation()"
-                                            (change)="$event ? selection.toggle(row) : null"
-                                            [checked]="selection.isSelected(row)"
-                                            [aria-label]="checkboxLabel(row)">
-                            </mat-checkbox>
-                        </td>
-                    </ng-container>
-        
-                    <!-- Position Column -->
                     <ng-container matColumnDef="position">
                         <th mat-header-cell *matHeaderCellDef> No. </th>
                         <td mat-cell *matCellDef="let element"> {{element.position}} </td>
                     </ng-container>
                     
-                    <!-- Name Column -->
                     <ng-container matColumnDef="name">
                         <th mat-header-cell *matHeaderCellDef> Name </th>
                         <td mat-cell *matCellDef="let element"> {{element.name}} </td>
                     </ng-container>
                     
-                    <!-- Weight Column -->
-                    <ng-container matColumnDef="weight">
-                        <th mat-header-cell *matHeaderCellDef> Weight </th>
-                        <td mat-cell *matCellDef="let element"> {{element.weight}} </td>
+                    <ng-container matColumnDef="phone">
+                        <th mat-header-cell *matHeaderCellDef> Phone </th>
+                        <td mat-cell *matCellDef="let element"> {{element.phone}} </td>
                     </ng-container>
                     
-                    <!-- Symbol Column -->
-                    <ng-container matColumnDef="symbol">
-                        <th mat-header-cell *matHeaderCellDef> Symbol </th>
-                        <td mat-cell *matCellDef="let element"> {{element.symbol}} </td>
+                    <ng-container matColumnDef="role">
+                        <th mat-header-cell *matHeaderCellDef> Role </th>
+                        <td mat-cell *matCellDef="let element"> {{element.role}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="active">
+                        <th mat-header-cell *matHeaderCellDef> Active </th>
+                        <td mat-cell *matCellDef="let element"> {{element.active}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="action">
+                        <th mat-header-cell *matHeaderCellDef> Active </th>
+                        <td mat-cell *matCellDef="let element"> <button mat-button (click)="editUser(element)">Edit</button></td>
                     </ng-container>
         
                     <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-                    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                 </table>
 
                 <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>

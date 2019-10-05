@@ -1,8 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { FormBuilder, FormControl, FormGroup, Validators, NgForm } from '@angular/forms';
+import { SharedService } from './../../services/shared.service';
 
 export interface PeriodicElement {
   name: string;
@@ -11,19 +13,6 @@ export interface PeriodicElement {
   symbol: string;
 }
 
-const ELEMENT_DATA: PeriodicElement[] = [
-  {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
-  {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
-  {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
-  {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be'},
-  {position: 5, name: 'Boron', weight: 10.811, symbol: 'B'},
-  {position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C'},
-  {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N'},
-  {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O'},
-  {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
-  {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
-];
-
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
@@ -31,36 +20,108 @@ const ELEMENT_DATA: PeriodicElement[] = [
 })
 export class UserComponent implements OnInit {
 
-  displayedColumns: string[] = ['select', 'position', 'name', 'weight', 'symbol'];
-  dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
-  selection = new SelectionModel<PeriodicElement>(true, []);
+  @ViewChild(MatTable, null) table: MatTable<any>;
+  displayedColumns: string[] = ['name', 'phone', 'role', 'active', 'action'];
+  dataSource = new MatTableDataSource<any>([]);
+  
+  villages: any[] = [];
+
+  selectedUser: any;
+  currentVillage: any;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
+  @ViewChild('ngForm', null) ngForm: NgForm;
 
-  constructor() { }
+  userForm: FormGroup;
+
+  constructor(private fb: FormBuilder, private shared: SharedService) { 
+    this.createUserForm();
+  }
 
   ngOnInit() {
+    this.getUsers();
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+    this.shared.villages.subscribe(villages => this.villages = villages);
   }
 
   applyFilter(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected === numRows;
+  generatePassword() {
+    return Math.random().toString(36).slice(8) + Math.random().toString(36).slice(8)
   }
 
-  /** The label for the checkbox on the passed row */
-  checkboxLabel(row?: PeriodicElement): string {
-    if (!row) {
-      return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
+  createUserForm() {
+    this.userForm = new FormGroup({
+      firstName: new FormControl('', Validators.required),
+      lastName: new FormControl('', Validators.required),
+      phone: new FormControl(null, Validators.required),
+      password: new FormControl(this.generatePassword()),
+      VillageId: new FormControl('', Validators.required),
+      role: new FormControl('', Validators.required)
+    })
+  }
+
+  saveUser() {
+    if (this.userForm.invalid) return;
+
+    if (typeof this.selectedUser == 'object' && Object.keys(this.selectedUser).length > 0) { // update user
+      this.shared.updateUser(this.selectedUser.id, this.userForm.value).subscribe(response => {
+        this.userForm.reset();
+        this.userForm.clearValidators();
+        this.ngForm.resetForm({ password: this.generatePassword() });
+        this.selectedUser = {};
+        this.getUsers();
+      });
+    } else {
+      // new user
+      this.shared.addUser(this.userForm.value).subscribe(response => {
+        this.userForm.reset();
+        this.ngForm.resetForm({ password: this.generatePassword() });
+        this.userForm.clearValidators();
+
+        const newUser = { ...response['user'] };
+        newUser.position = newUser.id;
+        newUser.name = `${newUser.firstName} ${newUser.lastName}`;
+        newUser.active = (newUser.active) ? 'Yes' : 'No';
+
+        this.dataSource.data.push(newUser);
+        this.table.renderRows();
+        this.getUsers();
+      });
     }
-    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
+  }
+
+  editUser(user) {
+    user = { ...user };
+    this.selectedUser = { ...user };
+
+    user.password = '';
+    delete user.id;
+    delete user.active;
+    delete user.createdAt;
+    delete user.updatedAt;
+    delete user.position;
+    delete user.name;
+
+    this.userForm.setValue(user);
+  }
+
+  getUsers() {
+    this.shared.getUsers().subscribe(
+      (response) => {
+        const users: Array<any> = response['users'];
+        users.map((user, index) => {
+          user.position = index;
+          user.name = `${user.firstName} ${user.lastName}`;
+          user.active = (user.active) ? 'Yes' : 'No';
+        })
+        this.dataSource.data = users;
+      }
+    )
   }
 
 }
