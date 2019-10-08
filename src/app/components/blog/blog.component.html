@@ -1,7 +1,7 @@
-<h2>Villages</h2>
+<h2>Blog</h2>
 
 <div class="row">
-    <div class="col col-12 col-md-4">
+    <div class="col col-12 col-md-5">
 
         <div class="table-section">
 
@@ -14,32 +14,26 @@
             <div class="table-container">
                 <table mat-table [dataSource]="dataSource">
         
-                    <!-- Checkbox Column -->
-                    <ng-container matColumnDef="select">
-                        <th mat-header-cell *matHeaderCellDef>
-                            <mat-checkbox (change)="$event ? masterToggle() : null"
-                                            [checked]="selection.hasValue() && isAllSelected()"
-                                            [indeterminate]="selection.hasValue() && !isAllSelected()">
-                            </mat-checkbox>
-                        </th>
-                        <td mat-cell *matCellDef="let row">
-                            <mat-checkbox (click)="$event.stopPropagation()"
-                                            (change)="$event ? selection.toggle(row) : null"
-                                            [checked]="selection.isSelected(row)">
-                            </mat-checkbox>
-                        </td>
+                    <ng-container matColumnDef="id">
+                        <th mat-header-cell *matHeaderCellDef> Id </th>
+                        <td mat-cell *matCellDef="let element"> {{element.id}} </td>
                     </ng-container>
-        
-                    <!-- Name Column -->
+
                     <ng-container matColumnDef="name">
                         <th mat-header-cell *matHeaderCellDef> Name </th>
                         <td mat-cell *matCellDef="let element"> {{element.name}} </td>
                     </ng-container>
                     
-                    <!-- Weight Column -->
-                    <ng-container matColumnDef="weight">
-                        <th mat-header-cell *matHeaderCellDef> Weight </th>
-                        <td mat-cell *matCellDef="let element"> {{element.weight}} </td>
+                    <ng-container matColumnDef="category">
+                        <th mat-header-cell *matHeaderCellDef> Category </th>
+                        <td mat-cell *matCellDef="let element"> {{element.category}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="action">
+                        <th mat-header-cell *matHeaderCellDef> Action </th>
+                        <td mat-cell *matCellDef="let element">  
+                            <button color="primary" mat-icon-button (click)="editBlog(element)">Edit</button>
+                        </td>
                     </ng-container>
                                         
                     <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
@@ -53,9 +47,29 @@
         </div>
 
     </div>
-    <div class="col col-12 col-md-8">
+    <div class="col col-12 col-md-7">
         
-        
+        <form autocomplete="off" #ngForm="ngForm" [formGroup]="blogForm" class="blog-form mt-4" (ngSubmit)="saveBlog()" novalidate>
+            
+            <mat-form-field>
+                <input matInput placeholder="Blog Title" name="title22" id="title22" autocomplete="new-password" formControlName="name">
+            </mat-form-field>
+
+            <mat-form-field>
+                <input matInput placeholder="Blog Category" name="category22" id="category22" autocomplete="new-password" formControlName="category">
+            </mat-form-field>
+
+            <div class="mt-3">
+                <quill-editor #editor [styles]="{height: '300px'}" formControlName="content"></quill-editor>
+            </div>
+    
+            <div class="display-block mb-3">
+                <button mat-flat-button [disabled]="!(blogForm.valid && blogForm.touched)" color="primary" type="submit" class="mt-3">Save</button>
+                <button mat-button type="button" (click)="resetBlogForm()">Reset</button>
+            </div>
+
+        </form>
+
 
     </div>
 </div>

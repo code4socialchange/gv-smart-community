@@ -69,6 +69,7 @@ mat-toolbar.mat-toolbar-multiple-rows {
     color: #fff;
     position: fixed;
     top: 0;
+    z-index: 300;
 }
 
 .main {
@@ -100,4 +101,8 @@ mat-toolbar.mat-toolbar-multiple-rows {
 
 .text-right {
     text-align: right;
+}
+
+.display-block {
+    display: block;
 }

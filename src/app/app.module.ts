@@ -1,5 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+
+import { QuillModule } from 'ngx-quill';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { 
@@ -24,6 +28,7 @@ import { BlogComponent } from './components/blog/blog.component';
 import { VillageComponent } from './components/village/village.component';
 import { MessageComponent } from './components/message/message.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { InterceptorService } from './services/interceptor.service';
 
 @NgModule({
   declarations: [
@@ -49,9 +54,15 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
     MatCheckboxModule,
     MatPaginatorModule,
     MatListModule,
-    MatSidenavModule
+    MatSidenavModule,
+    FormsModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    QuillModule.forRoot()
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
