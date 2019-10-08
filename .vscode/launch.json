@@ -8,7 +8,7 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceFolder}/api/index.js",
+            "program": "${workspaceFolder}/api/app.js",
             "runtimeExecutable": "/home/warlock/.nvm/versions/node/v12.1.0/bin/node"
         }
     ]

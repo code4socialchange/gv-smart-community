@@ -6,9 +6,10 @@ const blogController = require('./../controllers/blog');
 router
 	.route('/')
 	.get(blogController.getBlogs)
-	.post(blogController.updateBlog)
-
-router
+	.post(blogController.addBlog)
+	.patch(blogController.updateBlog)
+	
+	router
 	.route('/:blogId')
 	.get(blogController.getBlogById)
 	.delete(blogController.deleteBlog)

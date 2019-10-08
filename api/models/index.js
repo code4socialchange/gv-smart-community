@@ -20,7 +20,7 @@ if (process.env.DBSTRING) {
     sequelize = new Sequelize(process.env.DATABASE, process.env.DBUSER, process.env.DBPASS, {
         host: 'localhost',
         dialect: 'postgres',
-        logging: false,
+        logging: true,
         pool: {
             max: 5,
             idle: 30000,

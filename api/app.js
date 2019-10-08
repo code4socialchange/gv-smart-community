@@ -9,6 +9,7 @@ const helmet = require('helmet');
 
 const logger = require('./logger');
 const models = require('./models/index');
+const middleware = require('./middleware/auth');
 
 const app = express();
 
@@ -19,9 +20,22 @@ app.use(compression());
 app.use(helmet());
 app.use(cors());
 
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
 if (process.env.SERVERTYPE == 'OFFLINE') {
 	app.use('/api', require('./offline/routes'));
 } else {
+
+	const jwtMiddleware = ((req, res, next) => {
+		if (req.path === '/api/auth' || req.path === '/api/status') return next();
+		middleware.jwtMiddleware(req, res, next);
+	});
+
+	app.use(jwtMiddleware);
 	app.use('/api', require('./server/routes'));
 }
 

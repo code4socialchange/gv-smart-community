@@ -1,0 +1,12 @@
+app-blog:host {
+
+    .blog-form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .blog-form > *:not(img) {
+        width: 100%;
+    }
+
+}

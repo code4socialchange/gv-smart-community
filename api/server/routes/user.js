@@ -6,11 +6,12 @@ const userController = require('./../controllers/user');
 router
 	.route('/')
 	.get(userController.getAll)
-	.post(userController.updateUser)
+	.post(userController.addUser)
+	.patch(userController.updateUser)
+	.delete(userController.deleteUser)
 
 router
 	.route('/:userId')
 	.get(userController.getUserFromId)
-	.delete(userController.updateUser)
 
 module.exports = router;

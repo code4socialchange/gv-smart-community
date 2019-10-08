@@ -1,12 +1,14 @@
 /* eslint-disable no-dupe-keys */
 /* eslint-disable no-undef */
+const bcrypt = require('bcrypt');
+const db = require('./../../models/index');
 const logger = require('./../../logger');
 
 getAll = async(req, res, next) => {
 
 	try {
         
-		const users = await UserModel.findAll();
+		const users = await db.User.findAll({ attributes: { exclude: ['password'] } });
 
 		res.status(200).json({
 			success: true,
@@ -15,38 +17,82 @@ getAll = async(req, res, next) => {
 
 	} catch (error) {
         
-		logger.
+		logger.error('Error fetching users ', error);
 
-			res.status(500).json({
-				success: false,
-				message: error.message
-			})
+		res.status(500).json({
+			success: false,
+			message: error.message
+		})
 
 	}
 
 }
 
 getUserFromId = async(req, res, next) => {
-
+	
 	try {
-        
+		
 		const userId = req.params.id;
         
-		const user = UserModel.findOne({
-			where: {  }
+		await db.User.findOne({ where: { id: userId }, attributes: { exclude: ['password'] } }).then(user => {
+
+			return res.status(200).json({
+				success: true,
+				user: user
+			});
+
 		})
 
 
 	} catch (error) {
-        
+		
+		logger.error('Error finding user ', error);
+
+		return res.status(500).json({
+			success: false,
+			message: 'Error finding user'
+		})
+		
+	}
+
+}
+
+addUser = async(req, res, next) => {
+
+	const user = req.body.user;
+
+	try {
+		
+		user.password = await bcrypt.hash(user.password, 5);
+
+		await db.User.create(user).then(newUser => {
+
+			delete newUser.password;
+
+			return res.status(200).json({
+				success: true,
+				user: newUser,
+				message: 'User added successfully'
+			});
+		})
+	} catch (error) {
+		
+		logger.error('Error adding user', error);
+		return res.status(500).json({
+			success: false,
+			message: 'Error adding user'
+		})
+
 	}
 
 }
 
 updateUser = async(req, res, next) => {
 
-	const userId = req.body.user.id;
+	const userId = req.body.userId;
 	const updatedUser = req.body.user;
+	
+	delete updatedUser.password;
 
 	try {
         
@@ -78,7 +124,7 @@ updateUser = async(req, res, next) => {
 
 deleteUser = async(req, res, next) => {
 
-	const userId = req.params.userId;
+	const userId = req.body.userId;
 
 	try {
         
@@ -142,5 +188,5 @@ toggleUserActiveStatus = async(req, res, next) => {
 }
 
 module.exports = {
-	getAll, getUserFromId, deleteUser, updateUser, toggleUserActiveStatus
+	getAll, getUserFromId, addUser, deleteUser, updateUser, toggleUserActiveStatus
 }
