@@ -20,6 +20,14 @@ app.use(compression());
 app.use(helmet());
 app.use(cors());
 
+// Only for Production load Angular App
+if (process.env.NODE_ENV == 'production') {
+	app.use(express.static(path.join(__dirname, '../dist')));
+	app.use(/^((?!(api)).)*/, (req, res) => {
+		res.sendFile(path.join(__dirname, '../dist/index.html'));
+	}); 
+}
+
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
