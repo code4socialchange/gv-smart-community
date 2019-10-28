@@ -6,7 +6,7 @@
     "start": "concurrently \"npm run server\" \"npm run build\"",
     "dev": "concurrently \"npm run dev-front\" \"npm run dev-server\"",
     "dev-front": "ng serve --proxy-config proxy.conf.json -o",
-    "build": "ng build",
+    "build": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
