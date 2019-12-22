@@ -21,9 +21,19 @@ const authenticate = async(req, res, next) => {
 
             if (source == 'portal' && user.role == 'administrator') {
                 
+                user = JSON.parse(JSON.stringify(user));
                 delete user.password;
+                
+                return res.status(200).json({
+                    success: true,
+                    user: user,
+                    token: await Token.generator(user)
+                });
+
+            } else if (source == 'offline' && user.role !== 'administrator') {
 
                 user = JSON.parse(JSON.stringify(user));
+                delete user.password;
 
                 const token = await Token.generator(user);
                 
@@ -33,6 +43,8 @@ const authenticate = async(req, res, next) => {
                     token: token
                 });
 
+            } else {
+                // nothing
             }
     
         })
@@ -41,7 +53,7 @@ const authenticate = async(req, res, next) => {
         
         logger.error('Error authenticating user ', error);
 
-        return res.status(500).json({
+        return res.status(403).json({
             success: false,
             message: 'Wrong credentials'
         });

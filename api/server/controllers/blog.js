@@ -1,11 +1,12 @@
 const logger = require('./../../logger');
 const db = require('./../../models/index');
+const formidable = require('formidable');
 
 const getBlogs = async(req, res, next) => {
 
     try {
         
-		const blogs = await db.Blog.findAll({ attributes: { exclude: ['content'] } });
+		const blogs = await db.Blog.findAll();
 
 		res.status(200).json({
 			success: true,
@@ -145,4 +146,31 @@ const deleteBlog = async(req, res, next) => {
 
 }
 
-module.exports = { getBlogs, getBlogById, addBlog, updateBlog, deleteBlog }
+const uploadFile = async(req, res, next) => {
+
+	const form = new formidable.IncomingForm();
+	form.parse(req);
+
+	const currentTime = Date.now()
+
+	form.on('fileBegin', (name, file) => {
+        file.path = './videos/' + currentTime + file.name;
+    });
+
+    form.on('file', (name, file) => {
+		console.log('Uploaded ' + file.name);
+		res.status(200).json({
+			file: currentTime + file.name
+		})
+	});
+
+	form.on('error', function(err) {
+		res.status(500).json({
+			success: false,
+			message: err
+		})
+	});
+
+}
+
+module.exports = { getBlogs, getBlogById, addBlog, updateBlog, deleteBlog, uploadFile }

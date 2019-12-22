@@ -1,19 +1,12 @@
 const express = require('express');
 const router = express.Router();
 
+const profileController = require('./../../server/controllers/user');
+const userController = require('./../../server/controllers/user');
+
 router
     .route('/')
-    .get()
+    .get(userController.getAllFiltered)
     .post()
-
-router
-    .route('/profile')
-    .get()
-
-router
-    .route('/:userId')
-    .get()
-    .put()
-    .patch()
 
 module.exports = router;
