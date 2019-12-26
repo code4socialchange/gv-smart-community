@@ -6,11 +6,21 @@ const jwtMiddleware = (req, res, next) => {
 
     try {
 
-        jwt.verify(token, process.env.JWTSECRET, { audience: 'gvadmin' }, function(err, decoded) {
-            if (decoded.role === 'administrator') { 
+        if (process.env.SERVERTYPE == 'ONLINE') {
+            jwt.verify(token, process.env.JWTSECRET, (err, decoded) => {
+                if (err) throw err;
+                req.user = decoded;
                 next();
-            } else { throw 'err' }
-        });
+                // if (decoded.role === 'administrator') { 
+                // } else { throw 'err' }
+            });
+        } else {
+            jwt.verify(token, process.env.JWTSECRET, { audience: 'gvapp' }, (err, decoded) => {
+                req.user = decoded;
+                next();
+            });
+        }
+
 
     } catch(err) {
         

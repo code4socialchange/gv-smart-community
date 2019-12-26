@@ -3,12 +3,14 @@ const jwt = require('jsonwebtoken');
 const generator = (payload) => {
 
     const options = {
-        expiresIn: "1d",
+        expiresIn: "30d",
         issuer: 'gvsmartcomm',
-        audience: 'gvadmin',
         noTimestamp: false,
         jwtid: (Date.now()).toString()
     }
+
+    if (payload.role == 'administrator') options.audience = 'gvadmin'
+    else options.audience = 'gvapp';
     
     return new Promise((resolve, reject) => {
         jwt.sign(payload, process.env.JWTSECRET, options, (err, token) => {

@@ -3,6 +3,7 @@
 const bcrypt = require('bcrypt');
 const db = require('./../../models/index');
 const logger = require('./../../logger');
+const Op = require('sequelize').Op;
 
 getAll = async(req, res, next) => {
 
@@ -25,6 +26,78 @@ getAll = async(req, res, next) => {
 		})
 
 	}
+
+}
+
+getAllFiltered = async(req, res, next) => {
+
+	try {
+        
+		const users = await db.User.findAll({ 
+			where: {
+				VillageId: {
+					[Op.not]: req.user.VillageId,
+
+				},
+				role: { 
+					[Op.notLike]: '%administrator' 
+				},
+			}, 
+			attributes: { exclude: ['password'] } 
+		});
+
+		res.status(200).json({
+			success: true,
+			users: users
+		});
+
+	} catch (error) {
+        
+		logger.error('Error fetching users ', error);
+
+		res.status(500).json({
+			success: false,
+			message: error.message
+		})
+
+	}
+
+}
+
+getAllExceptAdministrator = async(req, res, next) => {
+
+	try {
+        
+		const users = await db.User.findAll({ where: { 
+			role: { 
+				[Op.notLike]: '%administrator' 
+			},
+		}, include: [{
+			model: db.Village
+		}], attributes: { exclude: ['password'] } });
+
+		res.status(200).json({
+			success: true,
+			users: users
+		});
+
+	} catch(error) {
+
+		logger.error('Error fetching users ', error);
+
+		res.status(500).json({
+			success: false,
+			message: error.message
+		})
+
+	}
+
+}
+
+getUserDetails = async(req, res, next) => {
+
+	req.params.id = req.user.id;
+	await getUserFromId(req, res, next);
 
 }
 
@@ -188,5 +261,5 @@ toggleUserActiveStatus = async(req, res, next) => {
 }
 
 module.exports = {
-	getAll, getUserFromId, addUser, deleteUser, updateUser, toggleUserActiveStatus
+	getAll, getAllFiltered, getUserFromId, addUser, deleteUser, updateUser, toggleUserActiveStatus, getAllExceptAdministrator
 }

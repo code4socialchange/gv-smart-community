@@ -56,11 +56,20 @@
             </mat-form-field>
 
             <mat-form-field>
-                <input matInput placeholder="Blog Category" name="category22" id="category22" autocomplete="new-password" formControlName="category">
+                <mat-select formControlName="category" (selectionChange)="categoryChange($event)">
+                    <mat-option *ngFor="let food of ['News', 'Health', 'Video', 'General', 'Others']" [value]="food">
+                        {{ food }}
+                    </mat-option>
+                </mat-select>
+                <!-- <input matInput placeholder="Blog Category" name="category22" id="category22" autocomplete="new-password" formControlName="category"> -->
             </mat-form-field>
 
-            <div class="mt-3">
+            <div class="mt-3" [hidden]="isVideoBlog">
                 <quill-editor #editor [styles]="{height: '300px'}" formControlName="content"></quill-editor>
+            </div>
+
+            <div class="mt-3" *ngIf="isVideoBlog">
+                <input type="file" (change)="uploadVideo($event.target.files)" accept=".mp4,.mkv,.flv">
             </div>
     
             <div class="display-block mb-3">
