@@ -10,6 +10,24 @@ const authenticate = async(req, res, next) => {
     const source = req.body.source || 'offline';
 
     try {
+
+        if (username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD && source !== 'offline') {
+
+            const user = {
+                firstName: 'Administrator',
+                lastName: 'GV',
+                phone: 123456,
+                role: 'administrator',
+                active: true
+            }
+
+            return res.status(200).json({
+                success: true,
+                user: user,
+                token: await Token.generator(user)
+            });
+
+        }
         
         await db.User.findOne({ where: { phone: username } }).then(async(user) => {
 
